@@ -1,50 +1,7 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { ArrowRight, RotateCcw, Trophy } from "lucide-react";
-import { FALLBACK, Country } from "../../lib/countries";
-
-function shuffle<T>(items: T[]) { return [...items].sort(() => Math.random() - 0.5); }
-function makeQuestions(all: Country[], count = 10) {
-  return shuffle(all).slice(0, Math.min(count, all.length)).map((correct) => ({
-    correct,
-    options: shuffle([correct, ...shuffle(all.filter((c) => c.cca2 !== correct.cca2)).slice(0, 3)]),
-  }));
-}
-
-export default function Quiz() {
-  const [countries, setCountries] = useState<Country[]>(FALLBACK);
-  const [loading, setLoading] = useState(true);
-  const [i, setI] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/countries")
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((data) => setCountries(data))
-      .catch(() => setCountries(FALLBACK))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const questions = useMemo(() => makeQuestions(countries, 10), [countries]);
-  const q = questions[i];
-
-  function choose(code: string) {
-    if (selected || !q) return;
-    setSelected(code);
-    if (code === q.correct.cca2) setScore((s) => s + 1);
-  }
-  function next() {
-    if (i === questions.length - 1) setDone(true);
-    else { setI((x) => x + 1); setSelected(null); }
-  }
-  function restart() { setI(0); setSelected(null); setScore(0); setDone(false); }
-
-  if (loading) return <main style={{ padding: "70px 0" }}><div className="container"><div className="card" style={{ maxWidth: 620, margin: "auto", padding: 40, textAlign: "center" }}><h1>Preparing your quiz…</h1><p style={{ color: "#667085" }}>Loading countries and flags.</p></div></div></main>;
-
-  if (done) return <main style={{ padding: "70px 0" }}><div className="container"><div className="card" style={{ maxWidth: 620, margin: "auto", padding: 40, textAlign: "center" }}><Trophy size={54} color="#2563eb"/><h1 style={{ fontSize: 44, margin: "14px 0 6px" }}>Quiz complete!</h1><div style={{ fontSize: 58, fontWeight: 900, color: "#2563eb" }}>{score}/{questions.length}</div><p style={{ color: "#667085", fontSize: 18 }}>{Math.round(score / questions.length * 100)}% — {score >= 8 ? "Excellent work!" : score >= 5 ? "Good job! Keep learning." : "Nice try. Explore Learn and play again."}</p><div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}><button onClick={restart} style={{ border: 0, borderRadius: 12, padding: "13px 18px", fontWeight: 800, background: "#2563eb", color: "white" }}><RotateCcw size={16} style={{ verticalAlign: "middle", marginRight: 6 }}/>Try Again</button><Link href="/learn" style={{ padding: "13px 18px", borderRadius: 12, fontWeight: 800, border: "1px solid #e5e7eb", textDecoration: "none", color: "inherit" }}>Explore Countries</Link></div></div></div></main>;
-
-  return <main style={{ padding: "44px 0 80px" }}><div className="container"><div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: 18 }}><div><div style={{ color: "#2563eb", fontWeight: 800 }}>FLAG QUIZ</div><h1 style={{ fontSize: "clamp(32px,5vw,40px)", margin: "7px 0" }}>Which country is this?</h1></div><strong>{i + 1} / {questions.length}</strong></div><div style={{ height: 8, background: "#e5e7eb", borderRadius: 99, marginBottom: 22 }}><div style={{ height: "100%", width: `${((i + 1) / questions.length) * 100}%`, background: "#2563eb", borderRadius: 99 }}/></div><div className="card" style={{ maxWidth: 760, margin: "auto", padding: 28 }}><div style={{ display: "grid", placeItems: "center", minHeight: 260, background: "#f8fafc", borderRadius: 16, padding: 20 }}><img src={q.correct.flag} alt="Flag to identify" className="flag" style={{ width: "min(100%,500px)", maxHeight: 280 }}/></div><div style={{ display: "grid", gap: 12, marginTop: 24 }}>{q.options.map((o) => { const isCorrect = o.cca2 === q.correct.cca2; const isSelected = selected === o.cca2; let cls = "answer"; if (selected && isCorrect) cls += " correct"; else if (selected && isSelected && !isCorrect) cls += " wrong"; return <button key={o.cca2} disabled={!!selected} onClick={() => choose(o.cca2)} className={cls} style={{ padding: 16, border: "1px solid #e5e7eb", borderRadius: 14, background: "white", textAlign: "left", fontWeight: 750 }}>{o.name}</button>; })}</div>{selected && <div style={{ marginTop: 18, padding: 16, borderRadius: 14, background: selected === q.correct.cca2 ? "#f0fdf4" : "#fef2f2" }}><strong>{selected === q.correct.cca2 ? "Correct! 🎉" : "Not quite."}</strong>{selected !== q.correct.cca2 && <div style={{ marginTop: 4 }}>The correct answer is <strong>{q.correct.name}</strong>.</div>}<button onClick={next} style={{ marginTop: 14, border: 0, borderRadius: 11, padding: "11px 15px", background: "#122033", color: "white", fontWeight: 800 }}>Next Question <ArrowRight size={16} style={{ verticalAlign: "middle", marginLeft: 5 }}/></button></div>}</div></div></main>;
-}
+import {useEffect,useMemo,useState} from "react"; import Link from "next/link"; import {ArrowRight,RotateCcw,Trophy} from "lucide-react"; import {FALLBACK,Country} from "../../lib/countries"; import {useLanguage} from "../i18n";
+function shuffle<T>(items:T[]){return [...items].sort(()=>Math.random()-.5)}
+function makeQuestions(all:Country[],count=10){return shuffle(all).slice(0,Math.min(count,all.length)).map(correct=>({correct,options:shuffle([correct,...shuffle(all.filter(c=>c.cca2!==correct.cca2)).slice(0,3)])}))}
+function countryLabel(c:Country,lang:string){try{return new Intl.DisplayNames([lang==="bn"?"bn":"en"],{type:"region"}).of(c.cca2)||c.name}catch{return c.name}}
+export default function Quiz(){const {lang,t}=useLanguage();const [countries,setCountries]=useState<Country[]>(FALLBACK);const [loading,setLoading]=useState(true);const [i,setI]=useState(0);const [selected,setSelected]=useState<string|null>(null);const [score,setScore]=useState(0);const [done,setDone]=useState(false);useEffect(()=>{fetch("/api/countries").then(r=>r.ok?r.json():Promise.reject()).then(data=>setCountries(data)).catch(()=>setCountries(FALLBACK)).finally(()=>setLoading(false))},[]);const questions=useMemo(()=>makeQuestions(countries,10),[countries]);const q=questions[i];function choose(code:string){if(selected||!q)return;setSelected(code);if(code===q.correct.cca2)setScore(s=>s+1)}function next(){if(i===questions.length-1)setDone(true);else{setI(x=>x+1);setSelected(null)}}function restart(){setI(0);setSelected(null);setScore(0);setDone(false)}if(loading)return <main style={{padding:"70px 0"}}><div className="container"><div className="card" style={{maxWidth:620,margin:"auto",padding:40,textAlign:"center"}}><h1>{t.loading}</h1><p style={{color:"#667085"}}>{t.loadingText}</p></div></div></main>;if(done){const pct=Math.round(score/questions.length*100);const message=score>=8?t.excellent:score>=5?t.good:t.nice;return <main style={{padding:"70px 0"}}><div className="container"><div className="card" style={{maxWidth:620,margin:"auto",padding:40,textAlign:"center"}}><Trophy size={54} color="#2563eb"/><h1 style={{fontSize:44,margin:"14px 0 6px"}}>{t.complete}</h1><div style={{fontSize:58,fontWeight:900,color:"#2563eb"}}>{score}/{questions.length}</div><p style={{color:"#667085",fontSize:18}}>{pct}% — {message}</p><div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}><button onClick={restart} style={{border:0,borderRadius:12,padding:"13px 18px",fontWeight:800,background:"#2563eb",color:"white"}}><RotateCcw size={16} style={{verticalAlign:"middle",marginRight:6}}/>{t.tryAgain}</button><Link href="/learn" style={{padding:"13px 18px",borderRadius:12,fontWeight:800,border:"1px solid #e5e7eb",textDecoration:"none",color:"inherit"}}>{t.explore}</Link></div></div></div></main>}
+return <main style={{padding:"44px 0 80px"}}><div className="container"><div style={{display:"flex",justifyContent:"space-between",alignItems:"end",marginBottom:18}}><div><div style={{color:"#2563eb",fontWeight:800}}>{t.flagQuiz}</div><h1 style={{fontSize:"clamp(32px,5vw,40px)",margin:"7px 0"}}>{t.which}</h1></div><strong>{i+1} / {questions.length}</strong></div><div style={{height:8,background:"#e5e7eb",borderRadius:99,marginBottom:22}}><div style={{height:"100%",width:`${((i+1)/questions.length)*100}%`,background:"#2563eb",borderRadius:99}}/></div><div className="card" style={{maxWidth:760,margin:"auto",padding:28}}><div style={{display:"grid",placeItems:"center",minHeight:260,background:"#f8fafc",borderRadius:16,padding:20}}><img src={q.correct.flag} alt={lang==="bn"?"চেনার জন্য পতাকা":"Flag to identify"} className="flag" style={{width:"min(100%,500px)",maxHeight:280}}/></div><div style={{display:"grid",gap:12,marginTop:24}}>{q.options.map(o=>{const isCorrect=o.cca2===q.correct.cca2;const isSelected=selected===o.cca2;let cls="answer";if(selected&&isCorrect)cls+=" correct";else if(selected&&isSelected&&!isCorrect)cls+=" wrong";return <button key={o.cca2} disabled={!!selected} onClick={()=>choose(o.cca2)} className={cls} style={{padding:16,border:"1px solid #e5e7eb",borderRadius:14,background:"white",textAlign:"left",fontWeight:750}}>{countryLabel(o,lang)}</button>})}</div>{selected&&<div style={{marginTop:18,padding:16,borderRadius:14,background:selected===q.correct.cca2?"#f0fdf4":"#fef2f2"}}><strong>{selected===q.correct.cca2?t.correct:t.wrong}</strong>{selected!==q.correct.cca2&&<div style={{marginTop:4}}>{t.answer} <strong>{countryLabel(q.correct,lang)}</strong>.</div>}<button onClick={next} style={{marginTop:14,border:0,borderRadius:11,padding:"11px 15px",background:"#122033",color:"white",fontWeight:800}}>{t.next} <ArrowRight size={16} style={{verticalAlign:"middle",marginLeft:5}}/></button></div>}</div></div></main>}
