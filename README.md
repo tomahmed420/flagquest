@@ -1,32 +1,64 @@
-# FlagQuest
+# FlagQuest 🌎
 
-Learn the world. Test your knowledge.
+**Learn the World. Test Your Knowledge.**
 
-FlagQuest is a responsive educational web app for exploring countries and identifying flags through interactive multiple-choice quizzes.
+FlagQuest is a responsive educational web app for exploring countries and identifying world flags through multiple-choice quizzes.
 
-## Planned stack
+## Current MVP
+
+- Interactive Home page
+- Desktop top navigation + mobile bottom navigation
+- Learn section with country cards
+- Country detail pages
+- Flag, capital, region, population, currency and language facts when available
+- 10-question flag quiz
+- Four randomized answer choices
+- Correct answer is never shown before the user answers
+- Immediate correct/incorrect feedback
+- Score and percentage result screen
+- REST Countries API integration with a local fallback dataset
+- Responsive UI foundation
+
+## Tech stack
 
 - Next.js App Router
-- TypeScript
-- Tailwind CSS
 - React
+- TypeScript
+- Tailwind CSS v4
 - Lucide React
-- Reliable country/flag data
+- REST Countries API
+- FlagCDN fallback assets
 
-## Core experience
+## Run locally
 
-- **Home** — overview, quick actions, and entry points.
-- **Quiz** — identify a flag without seeing the country name before answering.
-- **Learn** — search and browse countries, then open detailed country pages.
+```bash
+npm install
+npm run dev
+```
 
-## Quiz anti-reveal rule
+Open http://localhost:3000.
 
-The flag quiz must never reveal the correct country name before the user submits an answer. Answer choices are shuffled and include one correct country plus three distractors.
+## Architecture
 
-## Project specification
+- `app/page.tsx` — Home
+- `app/quiz/page.tsx` — Quiz
+- `app/learn/page.tsx` — Country explorer
+- `app/learn/[code]/page.tsx` — Country details
+- `app/navigation.tsx` — responsive navigation
+- `lib/countries.ts` — country types, API loader and fallback data
+- `app/globals.css` — design system and responsive styles
 
-The complete product requirements are documented in `docs/product-spec.md`.
+## Important quiz rule
 
-## Development
+The quiz does **not** display the country name alongside the flag before the answer is selected. The correct country is revealed only after an answer is submitted.
 
-The repository is currently being initialized from the approved product specification. The implementation is intentionally structured so future versions can add progress tracking, streaks, achievements, difficulty levels, daily quizzes, accounts, and multiple languages.
+## Next improvements
+
+- Client-side search/filter controls on Learn
+- More quiz modes and difficulty levels
+- Persistent progress/streaks
+- Daily quiz
+- Achievements and leaderboard
+- User accounts
+- Expanded country facts
+- Automated CI/build checks
