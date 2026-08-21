@@ -1,3 +1,38 @@
 "use client";
-import Link from "next/link"; import {ArrowRight,Brain,BookOpen,Globe2,Shuffle} from "lucide-react"; import {useLanguage} from "./i18n";
-export default function Home(){const {t}=useLanguage();return <main><section style={{padding:"78px 0 54px"}}><div className="container" style={{display:"grid",gridTemplateColumns:"1.15fr .85fr",gap:48,alignItems:"center"}}><div><div style={{display:"inline-flex",gap:8,alignItems:"center",padding:"8px 12px",borderRadius:99,background:"#e8f0ff",color:"#1d4ed8",fontWeight:700,fontSize:13}}><Globe2 size={16}/> {t.heroBadge}</div><h1 style={{fontSize:"clamp(42px,7vw,76px)",lineHeight:.98,letterSpacing:"-3px",margin:"22px 0 20px"}}>{t.heroTitle}<br/><span style={{color:"#2563eb"}}>{t.heroTitle2}</span></h1><p style={{fontSize:19,lineHeight:1.65,color:"#667085",maxWidth:620}}>{t.heroText}</p><div style={{display:"flex",gap:12,flexWrap:"wrap",marginTop:30}}><Link href="/quiz" style={{background:"#2563eb",color:"white",padding:"14px 20px",borderRadius:14,textDecoration:"none",fontWeight:800,display:"flex",gap:8,alignItems:"center"}}>{t.start} <ArrowRight size={18}/></Link><Link href="/learn" style={{background:"white",color:"#122033",padding:"14px 20px",borderRadius:14,textDecoration:"none",fontWeight:800,border:"1px solid #e5e7eb"}}>{t.explore}</Link></div></div><div className="card" style={{padding:28,background:"linear-gradient(145deg,#fff,#edf4ff)"}}><div style={{fontSize:14,fontWeight:800,color:"#667085"}}>{t.challenge}</div><div style={{fontSize:70,margin:"24px 0 14px",textAlign:"center"}}>🌎</div><h2 style={{textAlign:"center",margin:0}}>{t.challengeTitle}</h2><p style={{textAlign:"center",color:"#667085"}}>{t.challengeText}</p><Link href="/quiz" style={{display:"block",textAlign:"center",marginTop:20,padding:13,borderRadius:12,background:"#122033",color:"white",textDecoration:"none",fontWeight:800}}>{t.play}</Link></div></div></section><section style={{padding:"20px 0 80px"}}><div className="container"><h2 style={{fontSize:32,marginBottom:22}}>{t.threeWays}</h2><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16}}>{[[Brain,t.quiz,t.identify],[BookOpen,t.learn,t.facts],[Shuffle,t.lang==="bn"?"র‍্যান্ডম":"Random",t.random]].map(([Icon,title,text]:any)=><div className="card" key={title as string} style={{padding:24}}><Icon size={26} color="#2563eb"/><h3>{title}</h3><p style={{color:"#667085",lineHeight:1.6}}>{text}</p></div>)}</div></div></section></main>}
+import Link from "next/link";
+import { ArrowRight, Brain, BookOpen, Globe2, Shuffle } from "lucide-react";
+import { useLanguage } from "./i18n";
+
+export default function Home() {
+  const { t, lang } = useLanguage();
+  return <main>
+    <section style={{ padding: "78px 0 54px" }}>
+      <div className="container" style={{ display: "grid", gridTemplateColumns: "1.15fr .85fr", gap: 48, alignItems: "center" }}>
+        <div>
+          <div style={{ display: "inline-flex", gap: 8, alignItems: "center", padding: "8px 12px", borderRadius: 99, background: "#e8f0ff", color: "#1d4ed8", fontWeight: 700, fontSize: 13 }}><Globe2 size={16} /> {t.heroBadge}</div>
+          <h1 style={{ fontSize: "clamp(42px,7vw,76px)", lineHeight: .98, letterSpacing: "-3px", margin: "22px 0 20px" }}>{t.heroTitle}<br /><span style={{ color: "#2563eb" }}>{t.heroTitle2}</span></h1>
+          <p style={{ fontSize: 19, lineHeight: 1.65, color: "#667085", maxWidth: 620 }}>{t.heroText}</p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 30 }}>
+            <Link href="/quiz" style={{ background: "#2563eb", color: "white", padding: "14px 20px", borderRadius: 14, textDecoration: "none", fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}>{t.start} <ArrowRight size={18} /></Link>
+            <Link href="/learn" style={{ background: "white", color: "#122033", padding: "14px 20px", borderRadius: 14, textDecoration: "none", fontWeight: 800, border: "1px solid #e5e7eb" }}>{t.explore}</Link>
+          </div>
+        </div>
+        <div className="card" style={{ padding: 28, background: "linear-gradient(145deg,#fff,#edf4ff)" }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#667085" }}>{t.challenge}</div>
+          <div style={{ fontSize: 70, margin: "24px 0 14px", textAlign: "center" }}>🌎</div>
+          <h2 style={{ textAlign: "center", margin: 0 }}>{t.challengeTitle}</h2>
+          <p style={{ textAlign: "center", color: "#667085" }}>{t.challengeText}</p>
+          <Link href="/quiz" style={{ display: "block", textAlign: "center", marginTop: 20, padding: 13, borderRadius: 12, background: "#122033", color: "white", textDecoration: "none", fontWeight: 800 }}>{t.play}</Link>
+        </div>
+      </div>
+    </section>
+    <section style={{ padding: "20px 0 80px" }}>
+      <div className="container">
+        <h2 style={{ fontSize: 32, marginBottom: 22 }}>{t.threeWays}</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
+          {[[Brain, t.quiz, t.identify], [BookOpen, t.learn, t.facts], [Shuffle, lang === "bn" ? "র‍্যান্ডম" : "Random", t.random]].map(([Icon, title, text]: any) => <div className="card" key={title as string} style={{ padding: 24 }}><Icon size={26} color="#2563eb" /><h3>{title}</h3><p style={{ color: "#667085", lineHeight: 1.6 }}>{text}</p></div>)}
+        </div>
+      </div>
+    </section>
+  </main>;
+}
