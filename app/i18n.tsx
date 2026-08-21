@@ -7,6 +7,14 @@ const dict={
  en:{home:"Home",quiz:"Quiz",learn:"Learn",heroBadge:"World geography made fun",heroTitle:"Learn the world.",heroTitle2:"Test yourself.",heroText:"Explore countries, discover their flags and facts, then challenge yourself with fast interactive quizzes.",start:"Start Quiz",explore:"Explore Countries",challenge:"TODAY'S CHALLENGE",challengeTitle:"Can you name the flag?",challengeText:"No clues. Just your knowledge.",play:"Play now",threeWays:"One app, three ways to learn",identify:"Identify flags with four-choice questions.",facts:"Explore country facts at your own pace.",random:"Jump into a surprise country challenge.",search:"Search countries",all:"All",found:"countries found",noCountries:"No countries found",tryAnother:"Try another search or region.",allCountries:"All countries",test:"Test Yourself",capital:"Capital",region:"Region",subregion:"Subregion",population:"Population",currency:"Currency",languages:"Languages",code:"Country code",notFound:"Country not found",back:"Back to countries",which:"Which country is this?",loading:"Preparing your quiz…",loadingText:"Loading countries and flags.",complete:"Quiz complete!",tryAgain:"Try Again",correct:"Correct! 🎉",wrong:"Not quite.",answer:"The correct answer is",next:"Next Question",excellent:"Excellent work!",good:"Good job! Keep learning.",nice:"Nice try. Explore Learn and play again.",flagQuiz:"FLAG QUIZ",learnIntro:"Browse countries around the world, discover their flags, capitals and key facts.",english:"English",bangla:"বাংলা"}
 } as const;
 
-type T=typeof dict.en; const Ctx=createContext<{lang:Lang;setLang:(l:Lang)=>void;t:T}>({lang:"bn",setLang:()=>{},t:dict.bn as T});
-export function LanguageProvider({children}:{children:React.ReactNode}){const [lang,setLangState]=useState<Lang>("bn");useEffect(()=>{const saved=localStorage.getItem("flagquest-lang") as Lang|null;if(saved) setLangState(saved)},[]);function setLang(l:Lang){setLangState(l);localStorage.setItem("flagquest-lang",l)}return <Ctx.Provider value={{lang,setLang,t:dict[lang] as T}}>{children}</Ctx.Provider>}
+type T=Record<keyof typeof dict.en,string>;
+type ContextValue={lang:Lang;setLang:(l:Lang)=>void;t:T};
+const Ctx=createContext<ContextValue>({lang:"bn",setLang:()=>{},t:dict.bn});
+
+export function LanguageProvider({children}:{children:React.ReactNode}){
+  const [lang,setLangState]=useState<Lang>("bn");
+  useEffect(()=>{const saved=localStorage.getItem("flagquest-lang") as Lang|null;if(saved==="bn"||saved==="en") setLangState(saved)},[]);
+  function setLang(l:Lang){setLangState(l);localStorage.setItem("flagquest-lang",l)}
+  return <Ctx.Provider value={{lang,setLang,t:dict[lang] as T}}>{children}</Ctx.Provider>
+}
 export function useLanguage(){return useContext(Ctx)}
