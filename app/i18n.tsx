@@ -13,7 +13,11 @@ const Ctx=createContext<ContextValue>({lang:"bn",setLang:()=>{},t:dict.bn});
 
 export function LanguageProvider({children}:{children:React.ReactNode}){
   const [lang,setLangState]=useState<Lang>("bn");
-  useEffect(()=>{const saved=localStorage.getItem("flagquest-lang") as Lang|null;if(saved==="bn"||saved==="en") setLangState(saved)},[]);
+  useEffect(()=>{
+    const saved=localStorage.getItem("flagquest-lang");
+    if(saved==="bn"||saved==="en") setLangState(saved);
+  },[]);
+  useEffect(()=>{document.documentElement.lang=lang},[lang]);
   function setLang(l:Lang){setLangState(l);localStorage.setItem("flagquest-lang",l)}
   return <Ctx.Provider value={{lang,setLang,t:dict[lang] as T}}>{children}</Ctx.Provider>
 }
