@@ -1,0 +1,35 @@
+export type Country={name:string;officialName?:string;cca2:string;flag:string;capital?:string[];region:string;subregion?:string;population?:number;currencies?:Record<string,{name:string;symbol?:string}>;languages?:Record<string,string>};
+const FALLBACK:Country[]=[
+{name:"Bangladesh",cca2:"BD",flag:"https://flagcdn.com/w640/bd.png",capital:["Dhaka"],region:"Asia",subregion:"Southern Asia"},
+{name:"India",cca2:"IN",flag:"https://flagcdn.com/w640/in.png",capital:["New Delhi"],region:"Asia",subregion:"Southern Asia"},
+{name:"China",cca2:"CN",flag:"https://flagcdn.com/w640/cn.png",capital:["Beijing"],region:"Asia",subregion:"Eastern Asia"},
+{name:"Japan",cca2:"JP",flag:"https://flagcdn.com/w640/jp.png",capital:["Tokyo"],region:"Asia",subregion:"Eastern Asia"},
+{name:"Saudi Arabia",cca2:"SA",flag:"https://flagcdn.com/w640/sa.png",capital:["Riyadh"],region:"Asia",subregion:"Western Asia"},
+{name:"United States",cca2:"US",flag:"https://flagcdn.com/w640/us.png",capital:["Washington, D.C."],region:"Americas",subregion:"North America"},
+{name:"United Kingdom",cca2:"GB",flag:"https://flagcdn.com/w640/gb.png",capital:["London"],region:"Europe",subregion:"Northern Europe"},
+{name:"Canada",cca2:"CA",flag:"https://flagcdn.com/w640/ca.png",capital:["Ottawa"],region:"Americas",subregion:"North America"},
+{name:"Australia",cca2:"AU",flag:"https://flagcdn.com/w640/au.png",capital:["Canberra"],region:"Oceania",subregion:"Australia and New Zealand"},
+{name:"Pakistan",cca2:"PK",flag:"https://flagcdn.com/w640/pk.png",capital:["Islamabad"],region:"Asia",subregion:"Southern Asia"},
+{name:"Nepal",cca2:"NP",flag:"https://flagcdn.com/w640/np.png",capital:["Kathmandu"],region:"Asia",subregion:"Southern Asia"},
+{name:"South Korea",cca2:"KR",flag:"https://flagcdn.com/w640/kr.png",capital:["Seoul"],region:"Asia",subregion:"Eastern Asia"},
+{name:"Indonesia",cca2:"ID",flag:"https://flagcdn.com/w640/id.png",capital:["Jakarta"],region:"Asia",subregion:"South-Eastern Asia"},
+{name:"Malaysia",cca2:"MY",flag:"https://flagcdn.com/w640/my.png",capital:["Kuala Lumpur"],region:"Asia",subregion:"South-Eastern Asia"},
+{name:"Singapore",cca2:"SG",flag:"https://flagcdn.com/w640/sg.png",capital:["Singapore"],region:"Asia",subregion:"South-Eastern Asia"},
+{name:"France",cca2:"FR",flag:"https://flagcdn.com/w640/fr.png",capital:["Paris"],region:"Europe",subregion:"Western Europe"},
+{name:"Germany",cca2:"DE",flag:"https://flagcdn.com/w640/de.png",capital:["Berlin"],region:"Europe",subregion:"Western Europe"},
+{name:"Italy",cca2:"IT",flag:"https://flagcdn.com/w640/it.png",capital:["Rome"],region:"Europe",subregion:"Southern Europe"},
+{name:"Spain",cca2:"ES",flag:"https://flagcdn.com/w640/es.png",capital:["Madrid"],region:"Europe",subregion:"Southern Europe"},
+{name:"Brazil",cca2:"BR",flag:"https://flagcdn.com/w640/br.png",capital:["Brasília"],region:"Americas",subregion:"South America"},
+{name:"Mexico",cca2:"MX",flag:"https://flagcdn.com/w640/mx.png",capital:["Mexico City"],region:"Americas",subregion:"North America"},
+{name:"South Africa",cca2:"ZA",flag:"https://flagcdn.com/w640/za.png",capital:["Pretoria","Cape Town","Bloemfontein"],region:"Africa",subregion:"Southern Africa"},
+{name:"Egypt",cca2:"EG",flag:"https://flagcdn.com/w640/eg.png",capital:["Cairo"],region:"Africa",subregion:"Northern Africa"},
+{name:"Nigeria",cca2:"NG",flag:"https://flagcdn.com/w640/ng.png",capital:["Abuja"],region:"Africa",subregion:"Western Africa"},
+{name:"Turkey",cca2:"TR",flag:"https://flagcdn.com/w640/tr.png",capital:["Ankara"],region:"Asia",subregion:"Western Asia"},
+{name:"United Arab Emirates",cca2:"AE",flag:"https://flagcdn.com/w640/ae.png",capital:["Abu Dhabi"],region:"Asia",subregion:"Western Asia"},
+{name:"Qatar",cca2:"QA",flag:"https://flagcdn.com/w640/qa.png",capital:["Doha"],region:"Asia",subregion:"Western Asia"},
+{name:"Russia",cca2:"RU",flag:"https://flagcdn.com/w640/ru.png",capital:["Moscow"],region:"Europe",subregion:"Eastern Europe"},
+{name:"New Zealand",cca2:"NZ",flag:"https://flagcdn.com/w640/nz.png",capital:["Wellington"],region:"Oceania",subregion:"Australia and New Zealand"},
+{name:"Argentina",cca2:"AR",flag:"https://flagcdn.com/w640/ar.png",capital:["Buenos Aires"],region:"Americas",subregion:"South America"}
+];
+export async function getCountries():Promise<Country[]>{try{const r=await fetch("https://restcountries.com/v3.1/all?fields=name,flags,cca2,capital,region,subregion,population,currencies,languages",{next:{revalidate:86400}});if(!r.ok)throw new Error();const data=await r.json();return data.map((c:any)=>({name:c.name?.common,officialName:c.name?.official,cca2:c.cca2,flag:c.flags?.svg||c.flags?.png,capital:c.capital,region:c.region,subregion:c.subregion,population:c.population,currencies:c.currencies,languages:c.languages})).filter((c:Country)=>c.name&&c.cca2&&c.flag).sort((a:Country,b:Country)=>a.name.localeCompare(b.name));}catch{return FALLBACK;}}
+export {FALLBACK};
